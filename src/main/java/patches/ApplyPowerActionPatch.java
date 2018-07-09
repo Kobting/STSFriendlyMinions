@@ -1,12 +1,14 @@
 package patches;
 
 import characters.AbstractPlayerWithMinions;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import monsters.AbstractFriendlyMonster;
 
@@ -23,10 +25,12 @@ public class ApplyPowerActionPatch {
         if(target instanceof AbstractPlayerWithMinions && source instanceof AbstractMonster) {
             if(switchTarget()) {
                 AbstractPlayerWithMinions player = (AbstractPlayerWithMinions) AbstractDungeon.player;
-                ArrayList<AbstractFriendlyMonster> minions = player.getMinions();
-                int randomMinion = AbstractDungeon.aiRng.random(minions.size());
+                MonsterGroup minions = player.getMinions();
 
-                target = minions.get(randomMinion);
+                if(minions.monsters.size() > 0) {
+                    int randomMinion = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
+                    target = minions.monsters.get(randomMinion);
+                }
             }
         }
     }

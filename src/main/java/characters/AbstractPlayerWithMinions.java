@@ -1,19 +1,22 @@
 package characters;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import enums.MonsterIntentEnum;
 import monsters.AbstractFriendlyMonster;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
 
-    ArrayList<AbstractFriendlyMonster> minions;
+    public MonsterGroup minions;
+    private AbstractFriendlyMonster[] p_minions;
     int maxMinions;
 
     public AbstractPlayerWithMinions(String name, PlayerClass setClass) {
@@ -24,7 +27,9 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
     protected void initializeClass(String imgUrl, String shoulder2ImgUrl, String shouldImgUrl, String corpseImgUrl, CharSelectInfo info, float hb_x, float hb_y, float hb_w, float hb_h, EnergyManager energy) {
         super.initializeClass(imgUrl, shoulder2ImgUrl, shouldImgUrl, corpseImgUrl, info, hb_x, hb_y, hb_w, hb_h, energy);
         this.maxMinions = ((CustomCharSelectInfo)info).maxMinions;
-        minions = new ArrayList<>();
+        p_minions = new AbstractFriendlyMonster[this.maxMinions];
+        minions = new MonsterGroup(p_minions);
+        minions.monsters.removeIf(Objects::isNull);
     }
 
     @Override
@@ -62,38 +67,51 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
     }
 
     private void damageFriendlyMonster(DamageInfo info){
-        int randomMinionIndex = AbstractDungeon.aiRng.random(minions.size());
-        minions.get(randomMinionIndex).damage(info);
+        int randomMinionIndex = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
+        minions.monsters.get(randomMinionIndex).damage(info);
     }
 
     public boolean addMinion(AbstractFriendlyMonster minion){
-        if(minions.size() == maxMinions) {
+        if(minions.monsters.size() == maxMinions) {
             return false;
         } else {
             minion.init();
             minion.usePreBattleAction();
             minion.useUniversalPreBattleAction();
-            minion.showHealthBar();
-            minion.applyPowers();
             minions.add(minion);
             return true;
         }
     }
 
     public boolean removeMinion(AbstractFriendlyMonster minion) {
-        return minions.remove(minion);
+        return minions.monsters.remove(minion);
     }
 
     public void clearMinions(){
-        this.minions.clear();
+        minions.monsters.clear();
     }
 
     public boolean hasMinions() {
-        return minions.size() > 0;
+        return minions.monsters.size() > 0;
     }
 
-    public ArrayList<AbstractFriendlyMonster> getMinions(){
-        return this.minions;
+    public MonsterGroup getMinions(){
+        return minions;
     }
 
+    @Override
+    public void render(SpriteBatch sb) {
+        super.render(sb);
+        if(AbstractDungeon.getCurrRoom() != null){
+            switch (AbstractDungeon.getCurrRoom().phase) {
+                case COMBAT:
+                    minions.monsters.forEach(minion -> {
+                        minion.showHealthBar();
+                        minion.render(sb);
+                        minion.renderHealth(sb);
+                    });
+            }
+        }
+
+    }
 }
