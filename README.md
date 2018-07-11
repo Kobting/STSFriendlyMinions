@@ -38,7 +38,6 @@ public class TestingCompanion extends AbstractFriendlyMonster {
 
     public TestingCompanion() {
         super(NAME, ID, 20, null, -8.0F, 10.0F, 230.0F, 240.0F, "images/monsters/monster_testing.png", -700.0F, 0);
-        this.setMonsterMoves(makeMoves());
         moveInfo = makeMoves();
     }
 
