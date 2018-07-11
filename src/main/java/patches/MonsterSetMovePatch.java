@@ -57,7 +57,7 @@ public class MonsterSetMovePatch {
 
                 System.out.println("-------- Changing Intent -----------");
 
-                Field moveInfo = AbstractMonster.class.getDeclaredField("move"); //Throws NoSuchFieldException
+                Field moveInfo = AbstractMonster.class.getDeclaredField("move");
                 moveInfo.setAccessible(true);
 
                 EnemyMoveInfo newInfo = new EnemyMoveInfo(nextMove, possibleNewIntent, intentBaseDmg, multiplier, isMultiDamage);
