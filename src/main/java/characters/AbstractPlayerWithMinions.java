@@ -1,7 +1,11 @@
 package characters;
 
+import basemod.abstracts.CustomPlayer;
+import basemod.animations.AbstractAnimation;
+import basemod.animations.G3DJAnimation;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -31,13 +35,18 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
         super(name, setClass);
     }
 
+
     @Override
     protected void initializeClass(String imgUrl, String shoulder2ImgUrl, String shouldImgUrl, String corpseImgUrl, CharSelectInfo info, float hb_x, float hb_y, float hb_w, float hb_h, EnergyManager energy) {
         super.initializeClass(imgUrl, shoulder2ImgUrl, shouldImgUrl, corpseImgUrl, info, hb_x, hb_y, hb_w, hb_h, energy);
         this.maxMinions = ((CustomCharSelectInfo)info).maxMinions;
-        p_minions = new AbstractFriendlyMonster[this.maxMinions];
-        minions = new MonsterGroup(p_minions);
-        minions.monsters.removeIf(Objects::isNull);
+        clearMinions();
+    }
+
+    @Override
+    public void preBattlePrep() {
+        super.preBattlePrep();
+        clearMinions();
     }
 
     @Override
@@ -59,19 +68,6 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
 
     }
 
-    @Override
-    public void render(SpriteBatch sb) {
-        super.render(sb);
-        if(AbstractDungeon.getCurrRoom() != null){
-            switch (AbstractDungeon.getCurrRoom().phase) {
-                case COMBAT:
-                    minions.render(sb);
-                    break;
-            }
-        }
-
-    }
-
 
 
     @Override
@@ -79,6 +75,30 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
         super.applyEndOfTurnTriggers();
 
         this.minions.monsters.forEach(minion -> minion.takeTurn());
+    }
+
+    @Override
+    public void renderHealth(SpriteBatch sb) {
+        super.renderHealth(sb);
+        if(AbstractDungeon.getCurrRoom() != null){
+            switch (AbstractDungeon.getCurrRoom().phase) {
+                case COMBAT:
+                    minions.render(sb);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if(AbstractDungeon.getCurrRoom() != null) {
+            switch (AbstractDungeon.getCurrRoom().phase) {
+                case COMBAT:
+                    minions.update();
+                    break;
+            }
+        }
     }
 
     public boolean addMinion(AbstractFriendlyMonster minion){
@@ -99,7 +119,9 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
     }
 
     public void clearMinions(){
-        minions.monsters.clear();
+        p_minions = new AbstractFriendlyMonster[this.maxMinions];
+        minions = new MonsterGroup(p_minions);
+        minions.monsters.removeIf(Objects::isNull);
     }
 
 

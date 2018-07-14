@@ -65,6 +65,7 @@ public class MonsterSetMovePatch {
 
                 //TODO: Change intent icon
 
+
             }
 
             System.out.println("-------- End Change Intent -------------");
@@ -73,6 +74,10 @@ public class MonsterSetMovePatch {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private static void switchIntentType(AbstractMonster.Intent originalIntent) {
 
     }
 

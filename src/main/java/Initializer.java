@@ -30,6 +30,7 @@ public class Initializer implements EditCardsSubscriber, PostBattleSubscriber {
     @Override
     public void receivePostBattle(AbstractRoom abstractRoom) {
         if(AbstractDungeon.player instanceof AbstractPlayerWithMinions) {
+            BaseMod.logger.info("End of battle: Clearing players minions.");
             ((AbstractPlayerWithMinions)AbstractDungeon.player).clearMinions();
         }
     }

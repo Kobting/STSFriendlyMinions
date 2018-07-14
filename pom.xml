@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.evacipated.cardcrawl</groupId>
             <artifactId>ModTheSpire</artifactId>
-            <version>2.7.0</version>
+            <version>2.8.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/../lib/ModTheSpire.jar</systemPath>
         </dependency>
@@ -30,7 +30,7 @@
             <artifactId>BaseMod</artifactId>
             <version>2.14.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/../lib_testing/BaseMod.jar</systemPath>
+            <systemPath>${basedir}/../lib/BaseMod.jar</systemPath>
         </dependency>
 
     </dependencies>
