@@ -49,7 +49,7 @@ public class TestingCompanion extends AbstractFriendlyMonster {
     public void takeTurn() {
         if(!hasAttacked){
             moveInfo = makeMoves();
-            ChooseAction pickAction = new ChooseAction(new MonsterCard(), AbstractDungeon.getRandomMonster(), "Choose your attack");
+            ChooseAction pickAction = new ChooseAction(new MonsterCard(), target, "Choose your attack");
             this.moveInfo.forEach( move -> {
                 pickAction.add(move.getName(), move.getDescription(), move.getAction());
             });
