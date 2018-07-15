@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.vfx.TintEffect;
+import helpers.BasePlayerMinionHelper;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,11 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
 
     @Override
     public void die() {
-        ((AbstractPlayerWithMinions)AbstractDungeon.player).removeMinion(this);
+        if(!(AbstractDungeon.player instanceof AbstractPlayerWithMinions)){
+            BasePlayerMinionHelper.removeMinion(AbstractDungeon.player, this);
+        } else {
+            ((AbstractPlayerWithMinions)AbstractDungeon.player).removeMinion(this);
+        }
         super.die();
     }
 

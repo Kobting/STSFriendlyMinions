@@ -25,15 +25,31 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
+public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     public MonsterGroup minions;
     private AbstractFriendlyMonster[] p_minions;
     int maxMinions;
 
-    public AbstractPlayerWithMinions(String name, PlayerClass setClass) {
-        super(name, setClass);
+    public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, String model, String animation) {
+        super(name, playerClass, orbTextures, orbVfxPath, model, animation);
     }
+
+    public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds, String model, String animation) {
+        super(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, model, animation);
+    }
+
+    public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, AbstractAnimation animation) {
+        super(name, playerClass, orbTextures, orbVfxPath, animation);
+    }
+
+    public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds, AbstractAnimation animation) {
+        super(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, animation);
+    }
+
+//    public AbstractPlayerWithMinions(String name, PlayerClass setClass) {
+//        super(name, setClass);
+//    }
 
 
     @Override
@@ -78,8 +94,8 @@ public abstract class AbstractPlayerWithMinions extends AbstractPlayer {
     }
 
     @Override
-    public void renderHealth(SpriteBatch sb) {
-        super.renderHealth(sb);
+    public void render(SpriteBatch sb) {
+        super.render(sb);
         if(AbstractDungeon.getCurrRoom() != null){
             switch (AbstractDungeon.getCurrRoom().phase) {
                 case COMBAT:

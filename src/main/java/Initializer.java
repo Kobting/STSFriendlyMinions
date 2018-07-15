@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import helpers.BasePlayerMinionHelper;
 
 @SpireInitializer
 public class Initializer implements EditCardsSubscriber, PostBattleSubscriber {
@@ -29,8 +30,10 @@ public class Initializer implements EditCardsSubscriber, PostBattleSubscriber {
 
     @Override
     public void receivePostBattle(AbstractRoom abstractRoom) {
-        if(AbstractDungeon.player instanceof AbstractPlayerWithMinions) {
-            BaseMod.logger.info("End of battle: Clearing players minions.");
+        BaseMod.logger.info("End of battle: Clearing players minions.");
+        if(!(AbstractDungeon.player instanceof AbstractPlayerWithMinions)) {
+            BasePlayerMinionHelper.clearMinions(AbstractDungeon.player);
+        } else {
             ((AbstractPlayerWithMinions)AbstractDungeon.player).clearMinions();
         }
     }

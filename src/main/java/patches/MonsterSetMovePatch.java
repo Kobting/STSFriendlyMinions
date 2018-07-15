@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import enums.MonsterIntentEnum;
+import helpers.BasePlayerMinionHelper;
 
 import java.lang.reflect.Field;
 
@@ -16,34 +17,35 @@ import java.lang.reflect.Field;
 public class MonsterSetMovePatch {
 
     public static void Postfix(AbstractMonster monster, String moveName, byte nextMove, AbstractMonster.Intent intent, int baseDamage, int multiplier, boolean isMultiDamage) {
-        if(AbstractDungeon.player instanceof AbstractPlayerWithMinions){
-            if(((AbstractPlayerWithMinions)AbstractDungeon.player).hasMinions()){
-                switch (intent) {
-                    case ATTACK:
-                        maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case ATTACK_BUFF:
-                        maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_BUFF, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case ATTACK_DEBUFF:
-                        maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_DEBUFF, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case ATTACK_DEFEND:
-                        maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_DEFEND, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case DEBUFF:
-                        maybeChangeIntent(monster, MonsterIntentEnum.DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case STRONG_DEBUFF:
-                        maybeChangeIntent(monster, MonsterIntentEnum.STRONG_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                    case DEFEND_DEBUFF:
-                        maybeChangeIntent(monster, MonsterIntentEnum.DEFEND_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                        break;
-                }
+
+        if(BasePlayerMinionHelper.hasMinions(AbstractDungeon.player) ||
+                (AbstractDungeon.player instanceof AbstractPlayerWithMinions && ((AbstractPlayerWithMinions)AbstractDungeon.player).hasMinions())){
+            switch (intent) {
+                case ATTACK:
+                    maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case ATTACK_BUFF:
+                    maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_BUFF, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case ATTACK_DEBUFF:
+                    maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_DEBUFF, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case ATTACK_DEFEND:
+                    maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_DEFEND, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case DEBUFF:
+                    maybeChangeIntent(monster, MonsterIntentEnum.DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case STRONG_DEBUFF:
+                    maybeChangeIntent(monster, MonsterIntentEnum.STRONG_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
+                case DEFEND_DEBUFF:
+                    maybeChangeIntent(monster, MonsterIntentEnum.DEFEND_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
+                    break;
             }
         }
     }
+
 
     private static void maybeChangeIntent(AbstractMonster monster, AbstractMonster.Intent possibleNewIntent, byte nextMove, int intentBaseDmg, int multiplier, boolean isMultiDamage) {
 

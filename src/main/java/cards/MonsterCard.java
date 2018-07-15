@@ -11,7 +11,7 @@ public class MonsterCard extends CustomCard {
     public static final String NAME = "Monster Move";
 
     public MonsterCard() {
-        super(ID, NAME, "cards/monster_card.png", -2, "NONE", CardType.ATTACK, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.SELF_AND_ENEMY);
+        super(ID, NAME, "images/cards/monster_card.png", -2, "NONE", CardType.ATTACK, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.SELF_AND_ENEMY);
 
     }
 
