@@ -2,10 +2,12 @@ package helpers;
 
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import monsters.AbstractFriendlyMonster;
 import patches.PlayerAddFieldsPatch;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,6 +40,7 @@ public class BasePlayerMinionHelper {
     public static boolean removeMinion(AbstractPlayer player, AbstractFriendlyMonster minionToRemove) {
         return PlayerAddFieldsPatch.f_minions.get(player).monsters.remove(minionToRemove);
     }
+
 
     public static boolean hasMinions(AbstractPlayer player) {
         return PlayerAddFieldsPatch.f_minions.get(player).monsters.size() > 0;

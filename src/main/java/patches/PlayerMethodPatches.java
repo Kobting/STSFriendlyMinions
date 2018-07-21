@@ -88,6 +88,8 @@ public class PlayerMethodPatches {
             minions = PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player);
 
             int randomMinionIndex = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
+            AbstractFriendlyMonster minion = (AbstractFriendlyMonster) PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.get(randomMinionIndex);
+            info.applyPowers(info.owner, minion);
             AbstractDungeon.actionManager.addToBottom(new DamageAction(PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.get(randomMinionIndex), info, AbstractGameAction.AttackEffect.NONE));
         }
 

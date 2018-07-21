@@ -115,10 +115,6 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     public void changeMaxMinionAmount(int newAmount) {
         this.maxMinions = newAmount;
-        ArrayList<AbstractMonster> oldMinions = new ArrayList<>(this.minions.monsters);
-        this.minions = new MonsterGroup(new AbstractMonster[this.maxMinions]);
-        clearMinions();
-        oldMinions.forEach(m -> addMinion((AbstractFriendlyMonster) m));
     }
 
     public boolean addMinion(AbstractFriendlyMonster minion){
@@ -167,8 +163,9 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
      *  would count towards how the minions are damaged.
      */
     private void damageFriendlyMonster(DamageInfo info){
-        info.output = info.base;
         int randomMinionIndex = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
+        AbstractFriendlyMonster minion = (AbstractFriendlyMonster) minions.monsters.get(randomMinionIndex);
+        info.applyPowers(info.owner, minion);
         AbstractDungeon.actionManager.addToBottom(new DamageAction(minions.monsters.get(randomMinionIndex), info, AbstractGameAction.AttackEffect.NONE));
     }
 
