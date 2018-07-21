@@ -1,6 +1,7 @@
 package helpers;
 
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import monsters.AbstractFriendlyMonster;
 import patches.PlayerAddFieldsPatch;
@@ -9,6 +10,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class BasePlayerMinionHelper {
+
+    public static MonsterGroup getMinions(AbstractPlayer player) {
+        return PlayerAddFieldsPatch.f_minions.get(player);
+    }
+
+    public static void changeMaxMinionAmount(AbstractPlayer player, int newMax) {
+        PlayerAddFieldsPatch.f_maxMinions.set(player, newMax);
+    }
 
     public static boolean addMinion(AbstractPlayer player, AbstractFriendlyMonster minionToAdd) {
         MonsterGroup minions = PlayerAddFieldsPatch.f_minions.get(player);

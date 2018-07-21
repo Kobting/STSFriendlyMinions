@@ -21,6 +21,7 @@ import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import enums.MonsterIntentEnum;
 import monsters.AbstractFriendlyMonster;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,32 +33,23 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
     int maxMinions;
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, String model, String animation) {
-        super(name, playerClass, orbTextures, orbVfxPath, model, animation);
+        this(name, playerClass, orbTextures, orbVfxPath, (float[])null, model, animation);
     }
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds, String model, String animation) {
-        super(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, model, animation);
+        this(name, playerClass, orbTextures, orbVfxPath, (float[])layerSpeeds, (AbstractAnimation)(new G3DJAnimation(model, animation)));
     }
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, AbstractAnimation animation) {
-        super(name, playerClass, orbTextures, orbVfxPath, animation);
+        this(name, playerClass, orbTextures, orbVfxPath, (float[])null, (AbstractAnimation)animation);
     }
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds, AbstractAnimation animation) {
         super(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, animation);
-    }
-
-//    public AbstractPlayerWithMinions(String name, PlayerClass setClass) {
-//        super(name, setClass);
-//    }
-
-
-    @Override
-    protected void initializeClass(String imgUrl, String shoulder2ImgUrl, String shouldImgUrl, String corpseImgUrl, CharSelectInfo info, float hb_x, float hb_y, float hb_w, float hb_h, EnergyManager energy) {
-        super.initializeClass(imgUrl, shoulder2ImgUrl, shouldImgUrl, corpseImgUrl, info, hb_x, hb_y, hb_w, hb_h, energy);
-        this.maxMinions = ((CustomCharSelectInfo)info).maxMinions;
+        this.maxMinions = this.getInfo().maxMinions;
         clearMinions();
     }
+
 
     @Override
     public void preBattlePrep() {
@@ -84,7 +76,11 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     }
 
+    public abstract CustomCharSelectInfo getInfo();
 
+    public int getMaxMinions(){
+        return this.maxMinions;
+    }
 
     @Override
     public void applyEndOfTurnTriggers() {
@@ -117,6 +113,14 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
         }
     }
 
+    public void changeMaxMinionAmount(int newAmount) {
+        this.maxMinions = newAmount;
+        ArrayList<AbstractMonster> oldMinions = new ArrayList<>(this.minions.monsters);
+        this.minions = new MonsterGroup(new AbstractMonster[this.maxMinions]);
+        clearMinions();
+        oldMinions.forEach(m -> addMinion((AbstractFriendlyMonster) m));
+    }
+
     public boolean addMinion(AbstractFriendlyMonster minion){
         if(minions.monsters.size() == maxMinions) {
             return false;
@@ -129,6 +133,7 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
             return true;
         }
     }
+
 
     public boolean removeMinion(AbstractFriendlyMonster minion) {
         return minions.monsters.remove(minion);

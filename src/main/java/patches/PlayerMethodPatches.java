@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.ByRef;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -49,7 +50,7 @@ public class PlayerMethodPatches {
     )
     public static class DamagePatch{
 
-        public static void Prefix(AbstractPlayer _instance, DamageInfo info) {
+        public static SpireReturn Prefix(AbstractPlayer _instance, DamageInfo info) {
             if(!(_instance instanceof AbstractPlayerWithMinions)) {
                 AbstractMonster owner;
                 boolean attackingMonster = false;
@@ -59,10 +60,12 @@ public class PlayerMethodPatches {
                 }
                 if (attackingMonster) {
                     damageFriendlyMonster(info);
-                    return;
+                    return SpireReturn.Return(null);
+                } else {
+                    return SpireReturn.Continue();
                 }
             }
-
+            return SpireReturn.Continue();
         }
 
         private static boolean checkAttackMonsterIntent(AbstractMonster.Intent intent) {
