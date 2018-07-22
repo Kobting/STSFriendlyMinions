@@ -82,12 +82,39 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
         return this.maxMinions;
     }
 
+
     @Override
     public void applyEndOfTurnTriggers() {
         super.applyEndOfTurnTriggers();
-
         this.minions.monsters.forEach(minion -> minion.takeTurn());
+        this.minions.monsters.forEach(minion -> minion.applyEndOfTurnTriggers());
+        this.minions.monsters.forEach(minion -> minion.powers.forEach(power -> power.atEndOfRound()));
     }
+
+    @Override
+    public void applyStartOfTurnPostDrawPowers() {
+        super.applyStartOfTurnPostDrawPowers();
+        this.minions.monsters.forEach(minion -> minion.applyStartOfTurnPostDrawPowers());
+    }
+
+    @Override
+    public void applyStartOfTurnPowers() {
+        super.applyStartOfTurnPowers();
+        this.minions.monsters.forEach(minion -> minion.applyStartOfTurnPowers());
+    }
+
+    @Override
+    public void applyTurnPowers() {
+        super.applyTurnPowers();
+        this.minions.monsters.forEach(minion -> minion.applyTurnPowers());
+    }
+
+    @Override
+    public void updatePowers() {
+        super.updatePowers();
+        this.minions.monsters.forEach(minion -> minion.updatePowers());
+    }
+
 
     @Override
     public void render(SpriteBatch sb) {

@@ -175,12 +175,74 @@ public class PlayerMethodPatches {
         public static void Postfix(AbstractCreature _instance) {
             if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
                 BaseMod.logger.info("----------- Minion Before Attacking --------------");
-                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.takeTurn());
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> {
+                    monster.takeTurn();
+                });
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> {
+                    monster.applyEndOfTurnTriggers();
+                });
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> {
+                    monster.powers.forEach(power -> power.atEndOfRound());
+                });
             }
         }
 
     }
 
+    @SpirePatch(
+            cls = "com.megacrit.cardcrawl.core.AbstractCreature",
+            method = "applyTurnPowers"
+    )
+    public static class ApplyTurnPowersPatch{
 
+        public static void Postfix(AbstractCreature _instance) {
+            if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.applyTurnPowers());
+            }
+        }
+
+    }
+
+    @SpirePatch(
+            cls = "com.megacrit.cardcrawl.core.AbstractCreature",
+            method = "applyStartOfTurnPostDrawPowers"
+    )
+    public static class ApplyStartOfTurnPostDrawPowersPatch{
+
+        public static void Postfix(AbstractCreature _instance) {
+            if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.applyStartOfTurnPostDrawPowers());
+            }
+        }
+
+    }
+
+    @SpirePatch(
+            cls = "com.megacrit.cardcrawl.core.AbstractCreature",
+            method = "applyStartOfTurnPowers"
+    )
+    public static class ApplyStartOfTurnPowersPatch{
+
+        public static void Postfix(AbstractCreature _instance) {
+            if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.applyStartOfTurnPowers());
+            }
+        }
+
+    }
+
+    @SpirePatch(
+            cls = "com.megacrit.cardcrawl.core.AbstractCreature",
+            method = "updatePowers"
+    )
+    public static class UpdatePowersPatch{
+
+        public static void Postfix(AbstractCreature _instance) {
+            if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.updatePowers());
+            }
+        }
+
+    }
 
 }

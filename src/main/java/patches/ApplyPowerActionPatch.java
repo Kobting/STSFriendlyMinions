@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.AbstractPower;
+import enums.MonsterIntentEnum;
 import helpers.BasePlayerMinionHelper;
 import monsters.AbstractFriendlyMonster;
 
@@ -24,13 +25,13 @@ import java.lang.reflect.Field;
                       "com.megacrit.cardcrawl.powers.AbstractPower",
                       "int", "boolean", "com.megacrit.cardcrawl.actions.AbstractGameAction$AttackEffect"}
 )
-//TODO: This might need to be changed. Could allow for monster to attack and debuff two different minions.
+//TODO: This might need to be changed. Could allow for monster to attack and debuff different targets.
 public class ApplyPowerActionPatch {
 
 
     public static void Prefix(ApplyPowerAction applyPowerAction, AbstractCreature target, AbstractCreature source, AbstractPower powerToApply, int stackAmount, boolean isFast, AbstractGameAction.AttackEffect effect) {
         if((target instanceof AbstractPlayerWithMinions || BasePlayerMinionHelper.hasMinions(AbstractDungeon.player)) && source instanceof AbstractMonster) {
-            if(switchTarget()) {
+            if(switchTarget() && isDebuffingMinion(((AbstractMonster)source).intent)) {
                 try {
                     Field doneField = AbstractGameAction.class.getField("isDone");
                     doneField.setAccessible(true);
@@ -42,15 +43,17 @@ public class ApplyPowerActionPatch {
                             System.out.println("------Power Switching Target------");
                             int randomMinion = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
                             AbstractMonster newTarget = minions.monsters.get(randomMinion);
+                            powerToApply.owner = newTarget;
                             AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(newTarget, source, powerToApply, stackAmount, isFast, effect));
                         }
                     } else {
                         AbstractPlayerWithMinions player = (AbstractPlayerWithMinions) AbstractDungeon.player;
                         MonsterGroup minions = player.getMinions();
-                        if (minions.monsters.size() > 0) {
+                        if (player.hasMinions()) {
                             System.out.println("------Power Switching Target------");
                             int randomMinion = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
                             AbstractMonster newTarget = player.minions.monsters.get(randomMinion);
+                            powerToApply.owner = newTarget;
                             AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(newTarget, source, powerToApply, stackAmount, isFast, effect));
                         }
                     }
@@ -70,6 +73,15 @@ public class ApplyPowerActionPatch {
 
         return !(randomChoice > 1);
 
+    }
+
+    private static boolean isDebuffingMinion(AbstractMonster.Intent intent){
+
+        if(intent == MonsterIntentEnum.DEFEND_DEBUFF_MONSTER || intent == MonsterIntentEnum.STRONG_DEBUFF_MONSTER ||
+                intent == MonsterIntentEnum.DEBUFF_MONSTER || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF) {
+            return true;
+        }
+        return false;
     }
 
 }
