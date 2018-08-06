@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
+import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import enums.MonsterIntentEnum;
 import monsters.AbstractFriendlyMonster;
@@ -30,7 +31,8 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     public MonsterGroup minions;
     private AbstractFriendlyMonster[] p_minions;
-    int maxMinions;
+    private int maxMinions;
+    private int baseMinions;
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, String model, String animation) {
         this(name, playerClass, orbTextures, orbVfxPath, (float[])null, model, animation);
@@ -46,7 +48,8 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     public AbstractPlayerWithMinions(String name, PlayerClass playerClass, String[] orbTextures, String orbVfxPath, float[] layerSpeeds, AbstractAnimation animation) {
         super(name, playerClass, orbTextures, orbVfxPath, layerSpeeds, animation);
-        this.maxMinions = this.getInfo().maxMinions;
+        this.baseMinions = this.getInfo().maxMinions;
+        this.maxMinions = this.baseMinions;
         clearMinions();
     }
 
@@ -54,6 +57,7 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
     @Override
     public void preBattlePrep() {
         super.preBattlePrep();
+        this.maxMinions = this.baseMinions;
         clearMinions();
     }
 
@@ -81,7 +85,6 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
     public int getMaxMinions(){
         return this.maxMinions;
     }
-
 
     @Override
     public void applyEndOfTurnTriggers() {
@@ -114,7 +117,6 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
         super.updatePowers();
         this.minions.monsters.forEach(minion -> minion.updatePowers());
     }
-
 
     @Override
     public void render(SpriteBatch sb) {
@@ -171,10 +173,10 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     private boolean checkAttackMonsterIntent(AbstractMonster.Intent intent) {
 
-        if(intent == MonsterIntentEnum.ATTACK_MONSTER || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
-                || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND
-                || intent == MonsterIntentEnum.DEBUFF_MONSTER || intent == MonsterIntentEnum.STRONG_DEBUFF_MONSTER
-                || intent == MonsterIntentEnum.DEFEND_DEBUFF_MONSTER) {
+        if(intent == MonsterIntentEnum.ATTACK_MONSTER
+                || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
+                || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF
+                || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND) {
 
             return true;
         }

@@ -70,10 +70,10 @@ public class PlayerMethodPatches {
 
         private static boolean checkAttackMonsterIntent(AbstractMonster.Intent intent) {
 
-            if(intent == MonsterIntentEnum.ATTACK_MONSTER || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
-                    || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND
-                    || intent == MonsterIntentEnum.DEBUFF_MONSTER || intent == MonsterIntentEnum.STRONG_DEBUFF_MONSTER
-                    || intent == MonsterIntentEnum.DEFEND_DEBUFF_MONSTER) {
+            if(intent == MonsterIntentEnum.ATTACK_MONSTER
+                    || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
+                    || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF
+                    || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND) {
 
                 return true;
             }
@@ -160,6 +160,7 @@ public class PlayerMethodPatches {
         public static void Postfix(AbstractPlayer _instance) {
 
             if(!(_instance instanceof AbstractPlayerWithMinions)) {
+                BasePlayerMinionHelper.changeMaxMinionAmount(_instance, PlayerAddFieldsPatch.f_baseMinions.get(_instance));
                 BasePlayerMinionHelper.clearMinions(_instance);
             }
         }

@@ -1,12 +1,14 @@
 package patches;
 
 import characters.AbstractPlayerWithMinions;
+import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.EnemyMoveInfo;
 import enums.MonsterIntentEnum;
 import helpers.BasePlayerMinionHelper;
+import helpers.MinionConfigHelper;
 
 import java.lang.reflect.Field;
 
@@ -33,15 +35,6 @@ public class MonsterSetMovePatch {
                 case ATTACK_DEFEND:
                     maybeChangeIntent(monster, MonsterIntentEnum.ATTACK_MONSTER_DEFEND, nextMove, baseDamage, multiplier, isMultiDamage);
                     break;
-                case DEBUFF:
-                    maybeChangeIntent(monster, MonsterIntentEnum.DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                    break;
-                case STRONG_DEBUFF:
-                    maybeChangeIntent(monster, MonsterIntentEnum.STRONG_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                    break;
-                case DEFEND_DEBUFF:
-                    maybeChangeIntent(monster, MonsterIntentEnum.DEFEND_DEBUFF_MONSTER, nextMove, baseDamage, multiplier, isMultiDamage);
-                    break;
             }
         }
     }
@@ -49,13 +42,10 @@ public class MonsterSetMovePatch {
 
     private static void maybeChangeIntent(AbstractMonster monster, AbstractMonster.Intent possibleNewIntent, byte nextMove, int intentBaseDmg, int multiplier, boolean isMultiDamage) {
 
-        int randomChoice = AbstractDungeon.aiRng.random(0,3);
-
-
         try {
             System.out.println("--------- Maybe Change Intent -----------");
 
-            if(!(randomChoice > 1)) {
+            if(AbstractDungeon.aiRng.randomBoolean(MinionConfigHelper.MinionAttackTargetChance)) {
 
                 System.out.println("-------- Changing Intent -----------");
 
@@ -64,8 +54,6 @@ public class MonsterSetMovePatch {
 
                 EnemyMoveInfo newInfo = new EnemyMoveInfo(nextMove, possibleNewIntent, intentBaseDmg, multiplier, isMultiDamage);
                 moveInfo.set(monster, newInfo);
-
-                //TODO: Change intent icon
 
 
             }

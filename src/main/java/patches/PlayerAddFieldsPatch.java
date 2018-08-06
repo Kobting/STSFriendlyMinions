@@ -3,10 +3,13 @@ package patches;
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatches;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import monsters.AbstractFriendlyMonster;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 @SpirePatch(
@@ -19,7 +22,7 @@ public class PlayerAddFieldsPatch {
     private static AbstractFriendlyMonster[] p_minions = new AbstractFriendlyMonster[maxMinions];
     private static MonsterGroup minions = new MonsterGroup(p_minions);
 
-
+    public static SpireField<Integer> f_baseMinions = new SpireField<>(maxMinions);
     public static SpireField<Integer> f_maxMinions = new SpireField<>(maxMinions);
     public static SpireField<MonsterGroup> f_minions = new SpireField<>(minions);
 

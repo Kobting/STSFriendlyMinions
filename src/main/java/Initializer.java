@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import helpers.BasePlayerMinionHelper;
 
 @SpireInitializer
-public class Initializer implements EditCardsSubscriber, PostBattleSubscriber {
+public class Initializer implements EditCardsSubscriber, PostBattleSubscriber, EditKeywordsSubscriber {
 
     //Used by @SpireInitializer
     public static void initialize(){
@@ -38,4 +38,11 @@ public class Initializer implements EditCardsSubscriber, PostBattleSubscriber {
         }
     }
 
+    @Override
+    public void receiveEditKeywords() {
+
+        String[] minionKeyword = new String[] {"minion", "minions"};
+        BaseMod.addKeyword(minionKeyword, "A friendly monster that fights for you and has a chance to receive #yVulnerable, #yWeak, #yFrail, or #yStrength loss instead of you.");
+
+    }
 }

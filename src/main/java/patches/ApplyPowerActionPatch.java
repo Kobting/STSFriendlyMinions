@@ -1,18 +1,18 @@
 package patches;
 
 import characters.AbstractPlayerWithMinions;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.powers.AbstractPower;
+import com.megacrit.cardcrawl.powers.*;
 import enums.MonsterIntentEnum;
 import helpers.BasePlayerMinionHelper;
+import helpers.MinionConfigHelper;
 import monsters.AbstractFriendlyMonster;
 
 import java.lang.reflect.Field;
@@ -25,13 +25,12 @@ import java.lang.reflect.Field;
                       "com.megacrit.cardcrawl.powers.AbstractPower",
                       "int", "boolean", "com.megacrit.cardcrawl.actions.AbstractGameAction$AttackEffect"}
 )
-//TODO: This might need to be changed. Could allow for monster to attack and debuff different targets.
 public class ApplyPowerActionPatch {
 
 
-    public static void Prefix(ApplyPowerAction applyPowerAction, AbstractCreature target, AbstractCreature source, AbstractPower powerToApply, int stackAmount, boolean isFast, AbstractGameAction.AttackEffect effect) {
+    public static SpireReturn Prefix(ApplyPowerAction applyPowerAction, AbstractCreature target, AbstractCreature source, AbstractPower powerToApply, int stackAmount, boolean isFast, AbstractGameAction.AttackEffect effect) {
         if((target instanceof AbstractPlayerWithMinions || BasePlayerMinionHelper.hasMinions(AbstractDungeon.player)) && source instanceof AbstractMonster) {
-            if(switchTarget() && isDebuffingMinion(((AbstractMonster)source).intent)) {
+            if(AbstractDungeon.aiRng.randomBoolean(MinionConfigHelper.MinionPowerChance) && validPower(powerToApply)) {
                 try {
                     Field doneField = AbstractGameAction.class.getField("isDone");
                     doneField.setAccessible(true);
@@ -40,21 +39,18 @@ public class ApplyPowerActionPatch {
                     if(!(AbstractDungeon.player instanceof AbstractPlayerWithMinions)){
                         if(BasePlayerMinionHelper.hasMinions(AbstractDungeon.player)){
                             MonsterGroup minions = PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player);
-                            System.out.println("------Power Switching Target------");
-                            int randomMinion = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
-                            AbstractMonster newTarget = minions.monsters.get(randomMinion);
+                            AbstractMonster newTarget = minions.getRandomMonster();
                             powerToApply.owner = newTarget;
                             AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(newTarget, source, powerToApply, stackAmount, isFast, effect));
+                            return SpireReturn.Return(null);
                         }
                     } else {
                         AbstractPlayerWithMinions player = (AbstractPlayerWithMinions) AbstractDungeon.player;
-                        MonsterGroup minions = player.getMinions();
                         if (player.hasMinions()) {
-                            System.out.println("------Power Switching Target------");
-                            int randomMinion = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
-                            AbstractMonster newTarget = player.minions.monsters.get(randomMinion);
+                            AbstractMonster newTarget = player.getMinions().getRandomMonster();
                             powerToApply.owner = newTarget;
                             AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(newTarget, source, powerToApply, stackAmount, isFast, effect));
+                            return SpireReturn.Return(null);
                         }
                     }
 
@@ -65,23 +61,20 @@ public class ApplyPowerActionPatch {
                 }
             }
         }
+
+        return SpireReturn.Continue();
     }
 
-    private static boolean switchTarget(){
+    private static boolean validPower(AbstractPower powerToApply) {
 
-        int randomChoice = AbstractDungeon.aiRng.random(0,3);
+        //Makes sure powers only from Monsters are effected by this.
+        boolean fromMonster = powerToApply.owner instanceof AbstractMonster && !(powerToApply.owner instanceof AbstractFriendlyMonster);
 
-        return !(randomChoice > 1);
+        return fromMonster && (powerToApply instanceof VulnerablePower
+                               || powerToApply instanceof WeakPower
+                               || powerToApply instanceof FrailPower
+                               || powerToApply instanceof StrengthPower);
 
-    }
-
-    private static boolean isDebuffingMinion(AbstractMonster.Intent intent){
-
-        if(intent == MonsterIntentEnum.DEFEND_DEBUFF_MONSTER || intent == MonsterIntentEnum.STRONG_DEBUFF_MONSTER ||
-                intent == MonsterIntentEnum.DEBUFF_MONSTER || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF) {
-            return true;
-        }
-        return false;
     }
 
 }
