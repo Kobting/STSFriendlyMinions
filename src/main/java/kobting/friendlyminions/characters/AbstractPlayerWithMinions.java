@@ -1,33 +1,22 @@
-package characters;
+package kobting.friendlyminions.characters;
 
 import basemod.abstracts.CustomPlayer;
 import basemod.animations.AbstractAnimation;
 import basemod.animations.G3DJAnimation;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.actions.common.DamageAction;
 import com.megacrit.cardcrawl.cards.DamageInfo;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.EnergyManager;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.screens.CharSelectInfo;
-import enums.MonsterIntentEnum;
-import monsters.AbstractFriendlyMonster;
+import kobting.friendlyminions.enums.MonsterIntentEnum;
+import kobting.friendlyminions.helpers.MonsterHelper;
+import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public abstract class AbstractPlayerWithMinions extends CustomPlayer {
+public abstract class AbstractPlayerWithMinions extends CustomPlayer{
 
     public MonsterGroup minions;
     private AbstractFriendlyMonster[] p_minions;
@@ -62,6 +51,11 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
     }
 
     @Override
+    public void applyStartOfTurnRelics() {
+        super.applyStartOfTurnRelics();
+    }
+
+    @Override
     public void damage(DamageInfo info) {
 
         AbstractMonster owner;
@@ -72,7 +66,13 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
         }
 
         if(attackingMonster && minions.monsters.size() > 0) {
-            damageFriendlyMonster(info);
+            AbstractDungeon.actionManager.addToBottom(new DamageAction(MonsterHelper.getTarget((AbstractMonster) info.owner), info, AbstractGameAction.AttackEffect.NONE));
+            //damageFriendlyMonster(info);
+        }
+        else if(attackingMonster && minions.monsters.size() <= 0) {
+            MonsterHelper.switchTarget((AbstractMonster) info.owner, null);
+            info.applyPowers(info.owner, this);
+            super.damage(info);
         }
         else {
             super.damage(info);
@@ -152,7 +152,7 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
         } else {
             minion.init();
             minion.usePreBattleAction();
-            minion.useUniversalPreBattleAction();
+            //minion.useUniversalPreBattleAction(); //This might be causing blights to effect minions
             minion.showHealthBar();
             minions.add(minion);
             return true;
@@ -173,10 +173,10 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     private boolean checkAttackMonsterIntent(AbstractMonster.Intent intent) {
 
-        if(intent == MonsterIntentEnum.ATTACK_MONSTER
-                || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
-                || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF
-                || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND) {
+        if(intent == MonsterIntentEnum.ATTACK_MINION
+                || intent == MonsterIntentEnum.ATTACK_MINION_BUFF
+                || intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
+                || intent == MonsterIntentEnum.ATTACK_MINION_DEFEND) {
 
             return true;
         }
@@ -185,18 +185,6 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer {
 
     }
 
-    /*  This causes a delay when attacking the monster but I can't find another way around it other
-     *  than patching every monsters attacks. Which isn't realistic.
-     *
-     *  This is needed because if the player is blocking or intangible or has any effects applied it
-     *  would count towards how the minions are damaged.
-     */
-    private void damageFriendlyMonster(DamageInfo info){
-        int randomMinionIndex = AbstractDungeon.aiRng.random(minions.monsters.size() - 1);
-        AbstractFriendlyMonster minion = (AbstractFriendlyMonster) minions.monsters.get(randomMinionIndex);
-        info.applyPowers(info.owner, minion);
-        AbstractDungeon.actionManager.addToBottom(new DamageAction(minions.monsters.get(randomMinionIndex), info, AbstractGameAction.AttackEffect.NONE));
-    }
 
     public boolean hasMinions() {
         return minions.monsters.size() > 0;

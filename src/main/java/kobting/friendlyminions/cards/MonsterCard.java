@@ -1,4 +1,4 @@
-package cards;
+package kobting.friendlyminions.cards;
 
 import basemod.abstracts.CustomCard;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -20,6 +20,7 @@ public class MonsterCard extends CustomCard {
     public void upgrade() {
 
     }
+
 
     @Override
     public AbstractCard makeCopy() {

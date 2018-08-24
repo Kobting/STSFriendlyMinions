@@ -1,17 +1,18 @@
+package kobting.friendlyminions;
+
 import basemod.BaseMod;
 import basemod.interfaces.*;
-import cards.MonsterCard;
-import characters.AbstractPlayerWithMinions;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import kobting.friendlyminions.cards.MonsterCard;
+import kobting.friendlyminions.characters.AbstractPlayerWithMinions;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import helpers.BasePlayerMinionHelper;
+import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
 
 @SpireInitializer
-public class Initializer implements EditCardsSubscriber, PostBattleSubscriber, EditKeywordsSubscriber {
+public class Initializer implements
+        EditCardsSubscriber, PostBattleSubscriber,
+        EditKeywordsSubscriber {
 
     //Used by @SpireInitializer
     public static void initialize(){
@@ -45,4 +46,5 @@ public class Initializer implements EditCardsSubscriber, PostBattleSubscriber, E
         BaseMod.addKeyword(minionKeyword, "A friendly monster that fights for you and has a chance to receive #yVulnerable, #yWeak, #yFrail, or #yStrength loss instead of you.");
 
     }
+
 }

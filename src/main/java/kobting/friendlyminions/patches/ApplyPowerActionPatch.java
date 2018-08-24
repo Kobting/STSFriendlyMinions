@@ -1,6 +1,6 @@
-package patches;
+package kobting.friendlyminions.patches;
 
-import characters.AbstractPlayerWithMinions;
+import kobting.friendlyminions.characters.AbstractPlayerWithMinions;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -10,10 +10,9 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.powers.*;
-import enums.MonsterIntentEnum;
-import helpers.BasePlayerMinionHelper;
-import helpers.MinionConfigHelper;
-import monsters.AbstractFriendlyMonster;
+import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
+import kobting.friendlyminions.helpers.MinionConfigHelper;
+import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
 import java.lang.reflect.Field;
 

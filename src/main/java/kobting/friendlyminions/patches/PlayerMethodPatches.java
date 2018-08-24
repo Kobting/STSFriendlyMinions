@@ -1,10 +1,8 @@
-package patches;
+package kobting.friendlyminions.patches;
 
 import basemod.BaseMod;
-import characters.AbstractPlayerWithMinions;
+import kobting.friendlyminions.characters.AbstractPlayerWithMinions;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
@@ -16,13 +14,10 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import com.megacrit.cardcrawl.rooms.MonsterRoom;
-import enums.MonsterIntentEnum;
-import helpers.BasePlayerMinionHelper;
-import monsters.AbstractFriendlyMonster;
-
-import java.lang.reflect.Field;
-import java.util.Objects;
-import java.util.Optional;
+import kobting.friendlyminions.enums.MonsterIntentEnum;
+import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
+import kobting.friendlyminions.helpers.MonsterHelper;
+import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
 /*
  * All of these are checking against AbstractPlayerWithMinions to avoid double calling of those if
@@ -59,7 +54,8 @@ public class PlayerMethodPatches {
                     attackingMonster = checkAttackMonsterIntent(owner.intent);
                 }
                 if (attackingMonster) {
-                    damageFriendlyMonster(info);
+                    //damageFriendlyMonster(info);
+                    AbstractDungeon.actionManager.addToBottom(new DamageAction(MonsterHelper.getTarget((AbstractFriendlyMonster)info.owner), info, AbstractGameAction.AttackEffect.NONE));
                     return SpireReturn.Return(null);
                 } else {
                     return SpireReturn.Continue();
@@ -70,10 +66,10 @@ public class PlayerMethodPatches {
 
         private static boolean checkAttackMonsterIntent(AbstractMonster.Intent intent) {
 
-            if(intent == MonsterIntentEnum.ATTACK_MONSTER
-                    || intent == MonsterIntentEnum.ATTACK_MONSTER_BUFF
-                    || intent == MonsterIntentEnum.ATTACK_MONSTER_DEBUFF
-                    || intent == MonsterIntentEnum.ATTACK_MONSTER_DEFEND) {
+            if(intent == MonsterIntentEnum.ATTACK_MINION
+                    || intent == MonsterIntentEnum.ATTACK_MINION_BUFF
+                    || intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
+                    || intent == MonsterIntentEnum.ATTACK_MINION_DEFEND) {
 
                 return true;
             }

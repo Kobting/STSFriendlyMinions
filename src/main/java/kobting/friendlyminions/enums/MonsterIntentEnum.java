@@ -1,4 +1,4 @@
-package enums;
+package kobting.friendlyminions.enums;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -6,16 +6,16 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 public class MonsterIntentEnum {
 
     @SpireEnum
-    public static AbstractMonster.Intent ATTACK_MONSTER;
+    public static AbstractMonster.Intent ATTACK_MINION;
 
     @SpireEnum
-    public static AbstractMonster.Intent ATTACK_MONSTER_BUFF;
+    public static AbstractMonster.Intent ATTACK_MINION_BUFF;
 
     @SpireEnum
-    public static AbstractMonster.Intent ATTACK_MONSTER_DEBUFF;
+    public static AbstractMonster.Intent ATTACK_MINION_DEBUFF;
 
     @SpireEnum
-    public static AbstractMonster.Intent ATTACK_MONSTER_DEFEND;
+    public static AbstractMonster.Intent ATTACK_MINION_DEFEND;
 
     @SpireEnum
     public static AbstractMonster.Intent DEBUFF_MONSTER;

@@ -1,4 +1,4 @@
-package actions;
+package kobting.friendlyminions.actions;
 
 public class ChooseActionInfo {
 

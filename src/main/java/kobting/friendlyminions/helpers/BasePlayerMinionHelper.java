@@ -1,15 +1,11 @@
-package helpers;
+package kobting.friendlyminions.helpers;
 
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
-import monsters.AbstractFriendlyMonster;
-import patches.PlayerAddFieldsPatch;
+import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
+import kobting.friendlyminions.patches.PlayerAddFieldsPatch;
 
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Optional;
 
 public class BasePlayerMinionHelper {
 
@@ -30,7 +26,7 @@ public class BasePlayerMinionHelper {
         } else {
             minionToAdd.init();
             minionToAdd.usePreBattleAction();
-            minionToAdd.useUniversalPreBattleAction();
+            //minionToAdd.useUniversalPreBattleAction();
             minionToAdd.showHealthBar();
             minions.add(minionToAdd);
             return true;

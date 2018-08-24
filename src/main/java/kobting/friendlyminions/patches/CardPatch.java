@@ -1,13 +1,13 @@
-package patches;
+package kobting.friendlyminions.patches;
 
-import cards.CustomSummonCard;
-import characters.AbstractPlayerWithMinions;
+import kobting.friendlyminions.cards.CustomSummonCard;
+import kobting.friendlyminions.characters.AbstractPlayerWithMinions;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import helpers.BasePlayerMinionHelper;
+import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
 
 @SpirePatch(
         cls = "com.megacrit.cardcrawl.cards.AbstractCard",

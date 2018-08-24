@@ -1,17 +1,16 @@
-package monsters;
+package kobting.friendlyminions.monsters;
 
-import actions.ChooseAction;
-import actions.ChooseActionInfo;
-import cards.MonsterCard;
-import characters.AbstractPlayerWithMinions;
-import com.badlogic.gdx.graphics.Color;
+import kobting.friendlyminions.actions.ChooseAction;
+import kobting.friendlyminions.actions.ChooseActionInfo;
+import kobting.friendlyminions.cards.MonsterCard;
+import kobting.friendlyminions.characters.AbstractPlayerWithMinions;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.vfx.TintEffect;
-import helpers.BasePlayerMinionHelper;
+import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
 
 import java.util.ArrayList;
 
@@ -63,9 +62,10 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
         if(!(AbstractDungeon.player instanceof AbstractPlayerWithMinions)){
             BasePlayerMinionHelper.removeMinion(AbstractDungeon.player, this);
         } else {
+            this.isDead = true;
             ((AbstractPlayerWithMinions)AbstractDungeon.player).removeMinion(this);
         }
-        super.die();
+        super.die(false);
     }
 
     @Override

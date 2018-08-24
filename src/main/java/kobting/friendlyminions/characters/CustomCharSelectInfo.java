@@ -1,4 +1,4 @@
-package characters;
+package kobting.friendlyminions.characters;
 
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;

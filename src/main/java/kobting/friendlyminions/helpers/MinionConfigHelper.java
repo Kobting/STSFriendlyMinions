@@ -1,4 +1,4 @@
-package helpers;
+package kobting.friendlyminions.helpers;
 
 public class MinionConfigHelper {
 
