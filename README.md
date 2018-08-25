@@ -5,8 +5,8 @@ Currently in Beta and open for testing. Appreciate any bug reports.
 
 ### Requirements
 
-- [BaseMod](https://github.com/daviscook477/BaseMod/releases)
-- [ModTheSpire](https://github.com/kiooeht/ModTheSpire/releases)
+- [BaseMod (3.0.0+)](https://github.com/daviscook477/BaseMod/releases)
+- [ModTheSpire (3.0.0+)](https://github.com/kiooeht/ModTheSpire/releases)
 
 ### Example GetLoadout
 ```java
