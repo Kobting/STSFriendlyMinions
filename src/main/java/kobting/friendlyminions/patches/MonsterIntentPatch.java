@@ -8,6 +8,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.PowerTip;
@@ -48,7 +49,7 @@ public class MonsterIntentPatch {
         )
         public static void Insert(AbstractMonster __instance) {
             AbstractMonster.Intent _intent = __instance.intent;
-            if(((AbstractPlayerWithMinions)AbstractDungeon.player).hasMinions() || BasePlayerMinionHelper.hasMinions(AbstractDungeon.player)){
+            if((AbstractDungeon.player instanceof AbstractPlayerWithMinions && ((AbstractPlayerWithMinions)AbstractDungeon.player).hasMinions()) || BasePlayerMinionHelper.hasMinions(AbstractDungeon.player)){
                 if((_intent == MonsterIntentEnum.ATTACK_MINION
                         || _intent == MonsterIntentEnum.ATTACK_MINION_BUFF
                         || _intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
@@ -233,9 +234,6 @@ public class MonsterIntentPatch {
                 intentMultiAmt = f_intentMultiAmt.getInt(__instance);
 
                 AbstractMonster.Intent intent = __instance.intent;
-                AbstractPlayerWithMinions player = (AbstractPlayerWithMinions) AbstractDungeon.player;
-                MonsterGroup playerMinions = player.minions;
-                MonsterGroup playerMinion2 = BasePlayerMinionHelper.getMinions(AbstractDungeon.player);
                 AbstractFriendlyMonster target = MonsterHelper.getTarget(__instance);
 
                 if(MonsterHelper.getTarget(__instance) != null) {
@@ -286,19 +284,31 @@ public class MonsterIntentPatch {
                     } else {
                         return SpireReturn.Continue();
                     }
-                } else if(
-                        (MonsterHelper.getTarget(__instance) == null
-                         || !playerMinions.monsters.contains(target)
-                         || !playerMinion2.monsters.contains(target))
-                        &&
-                        (intent == MonsterIntentEnum.ATTACK_MINION
-                        || intent == MonsterIntentEnum.ATTACK_MINION_DEFEND
-                        || intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
-                        || intent == MonsterIntentEnum.ATTACK_MINION_BUFF
-                        )){
-                    MonsterHelper.switchTarget(__instance, null);
-                    return SpireReturn.Return(null);
                 } else {
+
+                    if(AbstractDungeon.player instanceof AbstractPlayerWithMinions) {
+                        MonsterGroup minions = ((AbstractPlayerWithMinions) AbstractDungeon.player).getMinions();
+                        if(!minions.monsters.contains(target) && (intent == MonsterIntentEnum.ATTACK_MINION
+                                || intent == MonsterIntentEnum.ATTACK_MINION_DEFEND
+                                || intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
+                                || intent == MonsterIntentEnum.ATTACK_MINION_BUFF
+                        )) {
+                            MonsterHelper.switchTarget(__instance, null);
+                            return SpireReturn.Return(null);
+                        }
+                    } else {
+                        MonsterGroup minions = BasePlayerMinionHelper.getMinions(AbstractDungeon.player);
+                        if(!minions.monsters.contains(target) && (intent == MonsterIntentEnum.ATTACK_MINION
+                                || intent == MonsterIntentEnum.ATTACK_MINION_DEFEND
+                                || intent == MonsterIntentEnum.ATTACK_MINION_DEBUFF
+                                || intent == MonsterIntentEnum.ATTACK_MINION_BUFF
+                        )) {
+                            MonsterHelper.switchTarget(__instance, null);
+                            return SpireReturn.Return(null);
+                        }
+                    }
+
+
                     return SpireReturn.Continue();
                 }
 

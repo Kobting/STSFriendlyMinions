@@ -55,7 +55,7 @@ public class PlayerMethodPatches {
                 }
                 if (attackingMonster) {
                     //damageFriendlyMonster(info);
-                    AbstractDungeon.actionManager.addToBottom(new DamageAction(MonsterHelper.getTarget((AbstractFriendlyMonster)info.owner), info, AbstractGameAction.AttackEffect.NONE));
+                    AbstractDungeon.actionManager.addToBottom(new DamageAction(MonsterHelper.getTarget((AbstractMonster)info.owner), info, AbstractGameAction.AttackEffect.NONE));
                     return SpireReturn.Return(null);
                 } else {
                     return SpireReturn.Continue();
