@@ -104,6 +104,7 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer{
     public void applyStartOfTurnPowers() {
         super.applyStartOfTurnPowers();
         this.minions.monsters.forEach(minion -> minion.applyStartOfTurnPowers());
+        this.minions.monsters.forEach(minion -> minion.loseBlock());
     }
 
     @Override

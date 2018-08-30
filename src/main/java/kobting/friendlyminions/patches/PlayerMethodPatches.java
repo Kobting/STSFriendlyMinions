@@ -223,6 +223,7 @@ public class PlayerMethodPatches {
         public static void Postfix(AbstractCreature _instance) {
             if((_instance instanceof AbstractPlayer) && !(_instance instanceof AbstractPlayerWithMinions)) {
                 PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.applyStartOfTurnPowers());
+                PlayerAddFieldsPatch.f_minions.get(AbstractDungeon.player).monsters.forEach(monster -> monster.loseBlock());
             }
         }
 
