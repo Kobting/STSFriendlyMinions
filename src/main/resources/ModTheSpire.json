@@ -3,7 +3,7 @@
   "name": "Friendly Minions",
   "author_list": ["Kobting"],
   "description": "Library for creating friendly minions and custom characters that can use friendly minions.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "dependencies": ["basemod"],
   "sts_version": "10-11-2018",
   "mts_version": "3.3.0",

@@ -22,8 +22,12 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
     }
 
 
-    public void addToMoves(MinionMove move){
+    public void addMove(MinionMove move){
         moves.addMove(move);
+    }
+
+    public void removeMove(String id){
+        moves.removeMove(id);
     }
 
     public void setTakenTurn(boolean takenTurn) {
