@@ -5,7 +5,7 @@ Currently in Beta and open for testing. Appreciate any bug reports.
 
 ### Requirements
 
-- [BaseMod (3.0.0+)](https://github.com/daviscook477/BaseMod/releases)
+- [BaseMod (4.0.0+)](https://github.com/daviscook477/BaseMod/releases)
 - [ModTheSpire (3.0.0+)](https://github.com/kiooeht/ModTheSpire/releases)
 
 ### Example GetLoadout
@@ -21,7 +21,7 @@ public static CharSelectInfo getLoadout() {
             2,  //maxMinions
             99, //gold
             5,  //cardDraw
-            CharacterEnum.Example,
+            this,
             getStartingRelics(),
             getStartingDeck(),
             false);
@@ -32,62 +32,35 @@ public static CharSelectInfo getLoadout() {
 
 ### Example FriendlyMinion
 ```java
-public class TestingCompanion extends AbstractFriendlyMonster {
-
-    public static String NAME = "TestingCompanion";
-    public static String ID = "TestingCompanion";
-    private ArrayList<ChooseActionInfo> moveInfo;
-    private boolean hasAttacked = false;
-    private AbstractMonster target;
+public class TestMinion extends AbstractFriendlyMonster {
     
-    public TestingCompanion() {
-        super(NAME, ID, 20, null, -8.0F, 10.0F, 230.0F, 240.0F, "images/monsters/monster_testing.png", -700.0F, 0);
-        
+    private static String NAME = "Testing Minion";
+    private static String ID = "TestingMinion";
+    private AbstractMonster target;
+
+    public TestMinion(int offsetX, int offsetY) {
+        super(NAME, ID, 20, -8.0F, 10.0F, 230.0F, 240.0F, "images/monsters/monster_testing.png", offsetX, offsetY);
+        addMoves();
     }
 
-    @Override
-    public void takeTurn() {
-        if(!hasAttacked){
-            moveInfo = makeMoves();
-            ChooseAction pickAction = new ChooseAction(new MonsterCard(), target, "Choose your attack");
-            this.moveInfo.forEach( move -> {
-                pickAction.add(move.getName(), move.getDescription(), move.getAction());
-            });
-            AbstractDungeon.actionManager.addToBottom(pickAction);
-        }
+    private void addMoves(){
+        this.moves.addMove(new MinionMove("Attack", this, new Texture("images/monsters/atk_bubble.png"), "Deal 5 damage", () -> {
+            target = AbstractDungeon.getRandomMonster();
+            DamageInfo info = new DamageInfo(this,5,DamageInfo.DamageType.NORMAL);
+            info.applyPowers(this, target); // <--- This lets powers effect minions attacks
+            AbstractDungeon.actionManager.addToBottom(new DamageAction(target, info));
+        }));
+        this.moves.addMove(new MinionMove("Defend", this, new Texture("images/monsters/atk_bubble.png"),"Gain 5 block", () -> {
+            AbstractDungeon.actionManager.addToBottom(new GainBlockAction(this,this, 5));
+        }));
     }
+
 
     @Override
     public void applyEndOfTurnTriggers() {
         super.applyEndOfTurnTriggers();
-        this.hasAttacked = false;
     }
-
-    //Create possible moves for the monster
-    private ArrayList<ChooseActionInfo> makeMoves(){
-        ArrayList<ChooseActionInfo> tempInfo = new ArrayList<>();
-
-        target = AbstractDungeon.getRandomMonster();
-
-        tempInfo.add(new ChooseActionInfo("Attack", "Deal 5 damage.", () -> {
-            AbstractDungeon.actionManager.addToBottom(new DamageAction(target,
-                    new DamageInfo(AbstractDungeon.player, 5, DamageInfo.DamageType.NORMAL)));
-        }));
-
-        tempInfo.add(new ChooseActionInfo("Debuff", "Apply 1 weaken.", () -> {
-            AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(target,AbstractDungeon.player,
-                    new WeakPower(AbstractDungeon.player, 1, false), 1));
-        }));
-
-        return tempInfo;
-    }
-
-
-    //Not needed unless doing some kind of random move like normal Monsters
-    @Override
-    protected void getMove(int i) {
-
-    }
+    
 }
 ```
 
