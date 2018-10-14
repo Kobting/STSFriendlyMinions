@@ -64,6 +64,7 @@ public class MinionMoveGroup {
             }
         }
 
+        updatePositions();
         return null;
 
     }
