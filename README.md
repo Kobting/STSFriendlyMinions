@@ -54,13 +54,6 @@ public class TestMinion extends AbstractFriendlyMonster {
             AbstractDungeon.actionManager.addToBottom(new GainBlockAction(this,this, 5));
         }));
     }
-
-
-    @Override
-    public void applyEndOfTurnTriggers() {
-        super.applyEndOfTurnTriggers();
-    }
-    
 }
 ```
 
