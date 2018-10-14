@@ -89,7 +89,6 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer{
     @Override
     public void applyEndOfTurnTriggers() {
         super.applyEndOfTurnTriggers();
-        this.minions.monsters.forEach(minion -> minion.takeTurn());
         this.minions.monsters.forEach(minion -> minion.applyEndOfTurnTriggers());
         this.minions.monsters.forEach(minion -> minion.powers.forEach(power -> power.atEndOfRound()));
     }
@@ -142,6 +141,7 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer{
             }
         }
     }
+
 
     public void changeMaxMinionAmount(int newAmount) {
         this.maxMinions = newAmount;

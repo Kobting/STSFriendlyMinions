@@ -1,45 +1,51 @@
 package kobting.friendlyminions.monsters;
 
+import basemod.ClickableUIElement;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 public class MinionMoveGroup {
 
     private ArrayList<MinionMove> moves;
-    private Color selectedColor = Color.GREEN;
     private static final float IMAGE_SIZE = 96.0F;
     protected static int currentIndex = 0;
     protected float xStart;
     protected float yStart;
 
     public MinionMoveGroup(float xStart, float yStart) {
-        this.moves = new ArrayList<>();
-        this.xStart = xStart;
-        this.yStart = yStart;
+        this(new ArrayList<MinionMove>(), xStart, yStart);
     }
 
     public MinionMoveGroup(ArrayList<MinionMove> moves, float xStart, float yStart){
         this.moves = moves;
-        this.xStart = (float)Settings.WIDTH * .075F + xStart * Settings.scale;
-        this.yStart = yStart * Settings.scale;
+        this.xStart = xStart;
+        this.yStart = yStart;
+        updatePositions();
     }
 
-    public MinionMoveGroup(ArrayList<MinionMove> moves, float xStart, float yStart, Color selectedColor) {
-        this.moves = moves;
-        this.selectedColor = selectedColor;
-        this.xStart = (float)Settings.WIDTH * .075F + xStart * Settings.scale;
-        this.yStart = yStart * Settings.scale;
+    public void updatePositions(){
+        int currentIndex = 0;
+        for (MinionMove move: this.moves) {
+            move.getHitbox().x = xStart + (IMAGE_SIZE * currentIndex * Settings.scale) - IMAGE_SIZE * Settings.scale;
+            move.getHitbox().y = yStart - IMAGE_SIZE * Settings.scale;
+            move.setX(xStart + (IMAGE_SIZE * currentIndex * Settings.scale) - IMAGE_SIZE * Settings.scale);
+            move.setY(yStart - IMAGE_SIZE * Settings.scale);
+            currentIndex++;
+        }
     }
 
     public void addMove(MinionMove move) {
         moves.add(move);
+        updatePositions();
     }
 
     public ArrayList<MinionMove> getMoves(){
@@ -65,36 +71,18 @@ public class MinionMoveGroup {
     public void render(SpriteBatch sb) {
         currentIndex = 0;
         moves.forEach(move -> {
-            if(move.isSelected()) {
-                sb.setColor(selectedColor);
-            } else {
-                sb.setColor(Color.WHITE);
-            }
-            drawMoveImage(sb, move.getMoveImage(), currentIndex);
+            sb.setColor(Color.RED);
+            move.getHitbox().render(sb);
+            sb.setColor(Color.WHITE);
+            drawMoveImage(move, sb, move.getMoveImage(), currentIndex);
             currentIndex++;
         });
         currentIndex = 0;
     }
 
+
     public void update() {
-        currentIndex = 0;
-        moves.forEach(minionMove -> {
-
-            //minionMove.getHitbox().update(xStart, yStart);
-
-            float x = xStart + (IMAGE_SIZE * currentIndex * Settings.scale);
-            minionMove.getHitbox().move(x - IMAGE_SIZE / 2, yStart - IMAGE_SIZE / 2);
-            minionMove.getHitbox().update();
-            if(minionMove.getHitbox().hovered) {
-                TipHelper.renderGenericTip(x ,yStart, minionMove.getID(), minionMove.getMoveDescription());
-            }
-
-            if(minionMove.getHitbox().hovered && InputHelper.justClickedLeft) {
-                onClick(minionMove);
-            }
-            currentIndex++;
-        });
-        currentIndex = 0;
+        moves.forEach(move -> {move.update();});
     }
 
     public void setxStart(float xStart) {
@@ -113,16 +101,7 @@ public class MinionMoveGroup {
         return this.yStart;
     }
 
-    protected void onClick(MinionMove move){
-        move.setSelected(!move.isSelected());
-        moves.forEach(movee -> {
-            if(movee.isSelected() && !movee.getID().equals(move.getID())) {
-                movee.setSelected(false);
-            }
-        });
-    }
-
-    protected void drawMoveImage(SpriteBatch sb, Texture moveImage, int currentIndex) {
-        sb.draw(moveImage, xStart + (IMAGE_SIZE * currentIndex * Settings.scale) - IMAGE_SIZE, yStart - IMAGE_SIZE, 0, 0, IMAGE_SIZE, IMAGE_SIZE, Settings.scale, Settings.scale, 0.0f, 0, 0, moveImage.getWidth(), moveImage.getHeight(), false, false);
+    protected void drawMoveImage(MinionMove move, SpriteBatch sb, Texture moveImage, int currentIndex) {
+        sb.draw(moveImage, move.getHitbox().x, move.getHitbox().y, 48.0f, 48.0f, IMAGE_SIZE, IMAGE_SIZE, Settings.scale * 1.5f, Settings.scale * 1.5f, 0.0f, 0, 0, moveImage.getWidth(), moveImage.getHeight(), false, false);
     }
 }

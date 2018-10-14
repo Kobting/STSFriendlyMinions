@@ -2,6 +2,7 @@ package kobting.friendlyminions.patches;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireField;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
+import com.megacrit.cardcrawl.helpers.MonsterHelper;
 import com.megacrit.cardcrawl.monsters.MonsterGroup;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
