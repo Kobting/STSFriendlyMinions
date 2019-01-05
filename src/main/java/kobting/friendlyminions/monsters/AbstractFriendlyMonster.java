@@ -12,6 +12,7 @@ import kobting.friendlyminions.helpers.BasePlayerMinionHelper;
 public abstract class AbstractFriendlyMonster extends AbstractMonster {
 
     protected MinionMoveGroup moves;
+    protected Texture[] attackIntents;
     private boolean takenTurn = false;
 
     public AbstractFriendlyMonster(String name, String id, int maxHealth,float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY){
@@ -21,6 +22,11 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
         moves = new MinionMoveGroup(this.drawX - 15.0f * Settings.scale, this.drawY - 15 * Settings.scale);
     }
 
+    public AbstractFriendlyMonster(String name, String id, int maxHealth,float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY, Texture[] attackIntents){
+        this(name, id, maxHealth, hb_x, hb_y, hb_w, hb_h, imgUrl, offsetX, offsetY);
+        this.attackIntents = attackIntents;
+    }
+
 
     public void addMove(MinionMove move){
         moves.addMove(move);
@@ -28,6 +34,22 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
 
     public void removeMove(String id){
         moves.removeMove(id);
+    }
+
+    public MinionMoveGroup getMoves(){
+        return this.moves;
+    }
+
+    public void setMoves(MinionMoveGroup moves) {
+        this.moves = moves;
+    }
+
+    public void clearMoves(){
+        this.moves.clearMoves();
+    }
+
+    public boolean hasMove(String id) {
+        return this.moves.hasMove(id);
     }
 
     public void setTakenTurn(boolean takenTurn) {
@@ -56,17 +78,25 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
     }
 
 
+    public Texture[] getAttackIntents(){
+        return this.attackIntents;
+    }
 
     @Override
     public void update() {
         super.update();
-        moves.update();
+        if(!this.takenTurn){
+            moves.update();
+        }
     }
 
     @Override
     public void render(SpriteBatch sb) {
         super.render(sb);
-        moves.render(sb);
+        if(!this.takenTurn){
+            moves.render(sb);
+        }
+
     }
 
     //Overriding these to make them not show up when extended as they aren't used by minions

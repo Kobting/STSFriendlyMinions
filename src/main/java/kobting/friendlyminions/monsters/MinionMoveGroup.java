@@ -52,6 +52,10 @@ public class MinionMoveGroup {
         return this.moves;
     }
 
+    public boolean hasMove(String id){
+        return this.moves.stream().anyMatch(move -> move.getID().equals(id));
+    }
+
     public MinionMove removeMove(String moveID) {
 
         Iterator<MinionMove> iterator = moves.iterator();
@@ -67,6 +71,11 @@ public class MinionMoveGroup {
         updatePositions();
         return null;
 
+    }
+
+    public void clearMoves(){
+        this.moves.clear();
+        updatePositions();
     }
 
     public void render(SpriteBatch sb) {

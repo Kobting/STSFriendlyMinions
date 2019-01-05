@@ -9,7 +9,10 @@ import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.events.AbstractEvent;
+import com.megacrit.cardcrawl.events.city.CursedTome;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
@@ -20,6 +23,7 @@ import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.DebuffParticleEffect;
 import com.megacrit.cardcrawl.vfx.ShieldParticleEffect;
 import com.megacrit.cardcrawl.vfx.combat.BuffParticleEffect;
+import javafx.scene.paint.Color;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import kobting.friendlyminions.cards.MonsterCard;
@@ -34,9 +38,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 public class MonsterIntentPatch {
+    
 
     @SpirePatch(
             cls = "com.megacrit.cardcrawl.monsters.AbstractMonster",
@@ -64,6 +71,7 @@ public class MonsterIntentPatch {
                         MonsterHelper.setTarget(__instance, target);
                     }
                 }
+
             }
         }
 
@@ -118,6 +126,26 @@ public class MonsterIntentPatch {
                     tmp = intentDmg.getInt(monster) * intentMultiAmt.getInt(monster);
                 } else {
                     tmp = intentDmg.getInt(monster);
+                }
+
+                if(MonsterHelper.getTarget(monster) != null) {
+                    AbstractFriendlyMonster target = MonsterHelper.getTarget(monster);
+                    if(target.getAttackIntents() != null && target.getAttackIntents().length >= 7 && Arrays.stream(target.getAttackIntents()).noneMatch(Objects::isNull)){
+                        Texture[] attackIntents = target.getAttackIntents();
+                        if (tmp < 5) {
+                            return attackIntents[0];
+                        } else if (tmp < 10) {
+                            return attackIntents[1];
+                        } else if (tmp < 15) {
+                            return attackIntents[2];
+                        } else if (tmp < 20) {
+                            return attackIntents[3];
+                        } else if (tmp < 25) {
+                            return attackIntents[4];
+                        } else {
+                            return tmp < 30 ? attackIntents[5] : attackIntents[6];
+                        }
+                    }
                 }
 
                 if (tmp < 5) {

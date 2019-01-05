@@ -45,6 +45,7 @@ public class PlayerMethodPatches {
     )
     public static class DamagePatch{
 
+        //TODO make this logic match logic of damage in AbstractPlayerWithMinions
         public static SpireReturn Prefix(AbstractPlayer _instance, DamageInfo info) {
             if(!(_instance instanceof AbstractPlayerWithMinions)) {
                 AbstractMonster owner;

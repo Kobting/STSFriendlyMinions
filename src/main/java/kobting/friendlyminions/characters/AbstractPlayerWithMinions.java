@@ -14,6 +14,7 @@ import kobting.friendlyminions.enums.MonsterIntentEnum;
 import kobting.friendlyminions.helpers.MonsterHelper;
 import kobting.friendlyminions.monsters.AbstractFriendlyMonster;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public abstract class AbstractPlayerWithMinions extends CustomPlayer{
@@ -145,6 +146,19 @@ public abstract class AbstractPlayerWithMinions extends CustomPlayer{
 
     public void changeMaxMinionAmount(int newAmount) {
         this.maxMinions = newAmount;
+    }
+
+    public boolean hasMinion(String minionID) {
+        for(AbstractMonster m : minions.monsters) {
+            if(((AbstractFriendlyMonster)m).id.equals(minionID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AbstractFriendlyMonster getMinion(String minionID) {
+        return (AbstractFriendlyMonster) minions.getMonster(minionID);
     }
 
     public boolean addMinion(AbstractFriendlyMonster minion){
