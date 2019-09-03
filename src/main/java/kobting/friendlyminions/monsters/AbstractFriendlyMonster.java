@@ -17,9 +17,12 @@ public abstract class AbstractFriendlyMonster extends AbstractMonster {
 
     public AbstractFriendlyMonster(String name, String id, int maxHealth,float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY){
         super(name, id, maxHealth, hb_x, hb_y, hb_w, hb_h, null, offsetX, offsetY);
-        this.img = new Texture(imgUrl);
+        if(imgUrl != null) {
+            this.img = new Texture(imgUrl);
+        }
         this.tint = new TintEffect();
         moves = new MinionMoveGroup(this.drawX - 15.0f * Settings.scale, this.drawY - 15 * Settings.scale);
+
     }
 
     public AbstractFriendlyMonster(String name, String id, int maxHealth,float hb_x, float hb_y, float hb_w, float hb_h, String imgUrl, float offsetX, float offsetY, Texture[] attackIntents){
