@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath "com.github.kobting:sts-dependencies:1.0.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+apply plugin: 'com.github.kobting'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation ModTheSpire
+    implementation BaseMod
+    implementation SlayTheSpire
+}
+
+shadowJar {
+    exclude "desktop-1.0.jar"
+}
+
+group = 'friendlyminions'
+version = '0.2.0'
+
+description = "FriendlyMinions"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
